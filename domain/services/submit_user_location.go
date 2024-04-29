@@ -27,8 +27,8 @@ func (service *userLocationServices) CreateUserLocationService(c echo.Context) e
 	}
 
 	location := types.UserLocation{
-		ID:        int64(userLocation.ID),
-		Email:     userLocation.Uid,
+		Uid:       userLocation.Uid,
+		Email:     userLocation.Email.String,
 		Fullname:  userLocation.Fullname,
 		Latitude:  userLocation.Latitude.Float64,
 		Longitude: userLocation.Longitude.Float64,

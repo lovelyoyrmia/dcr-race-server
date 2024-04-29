@@ -18,7 +18,11 @@ func (u *userRepositories) SaveUserLocation(ctx context.Context, req *types.User
 	if err != nil {
 		if err == sql.ErrNoRows {
 			result, err := u.db.CreateUserLocation(ctx, db.CreateUserLocationParams{
-				Uid: req.Email,
+				Uid: req.Uid,
+				Email: sql.NullString{
+					String: req.Email,
+					Valid: true,
+				},
 				Latitude: sql.NullFloat64{
 					Float64: req.Latitude,
 					Valid:   true,
@@ -58,6 +62,11 @@ func (u *userRepositories) SaveUserLocation(ctx context.Context, req *types.User
 
 	_, err = u.db.UpdateUserLocation(ctx, db.UpdateUserLocationParams{
 		Uid: user.Uid,
+		Email: sql.NullString{
+			String: req.Email,
+			Valid: true,
+		},
+		Fullname: req.Fullname,
 		Latitude: sql.NullFloat64{
 			Float64: req.Latitude,
 			Valid:   true,

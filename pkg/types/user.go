@@ -1,7 +1,7 @@
 package types
 
 type UserLocation struct {
-	ID        int64   `json:"id"`
+	Uid        string   `json:"uid"`
 	Email     string  `json:"email"`
 	Fullname  string  `json:"fullname"`
 	Latitude  float64 `json:"latitude"`
@@ -12,6 +12,7 @@ type UserLocation struct {
 }
 
 type UserLocationParams struct {
+	Uid     string  `json:"uid" form:"uid"`
 	Email     string  `json:"email" form:"email"`
 	Fullname  string  `json:"fullname" form:"fullname"`
 	Latitude  float64 `json:"latitude" form:"latitude"`

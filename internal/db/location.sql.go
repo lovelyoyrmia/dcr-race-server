@@ -13,18 +13,20 @@ import (
 const createUserLocation = `-- name: CreateUserLocation :execresult
 INSERT INTO users_location (
     uid,
+    email,
     latitude,
     longitude,
     altitude,
     category,
     fullname
 ) VALUES (
-    ?, ?, ?, ?, ?, ?
+    ?, ?, ?, ?, ?, ?, ?
 )
 `
 
 type CreateUserLocationParams struct {
 	Uid       string          `json:"uid"`
+	Email     sql.NullString  `json:"email"`
 	Latitude  sql.NullFloat64 `json:"latitude"`
 	Longitude sql.NullFloat64 `json:"longitude"`
 	Altitude  sql.NullFloat64 `json:"altitude"`
@@ -35,6 +37,7 @@ type CreateUserLocationParams struct {
 func (q *Queries) CreateUserLocation(ctx context.Context, arg CreateUserLocationParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, createUserLocation,
 		arg.Uid,
+		arg.Email,
 		arg.Latitude,
 		arg.Longitude,
 		arg.Altitude,
@@ -44,7 +47,7 @@ func (q *Queries) CreateUserLocation(ctx context.Context, arg CreateUserLocation
 }
 
 const getUserLocation = `-- name: GetUserLocation :one
-SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp FROM users_location
+SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp, email FROM users_location
 WHERE uid = ?
 LIMIT 1
 `
@@ -61,12 +64,13 @@ func (q *Queries) GetUserLocation(ctx context.Context, uid string) (UsersLocatio
 		&i.Longitude,
 		&i.Altitude,
 		&i.Timestamp,
+		&i.Email,
 	)
 	return i, err
 }
 
 const getUserLocationByID = `-- name: GetUserLocationByID :one
-SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp FROM users_location
+SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp, email FROM users_location
 WHERE id = ?
 LIMIT 1
 `
@@ -83,12 +87,13 @@ func (q *Queries) GetUserLocationByID(ctx context.Context, id int32) (UsersLocat
 		&i.Longitude,
 		&i.Altitude,
 		&i.Timestamp,
+		&i.Email,
 	)
 	return i, err
 }
 
 const getUserLocations = `-- name: GetUserLocations :many
-SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp FROM users_location
+SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp, email FROM users_location
 LIMIT ?
 `
 
@@ -110,6 +115,7 @@ func (q *Queries) GetUserLocations(ctx context.Context, limit int32) ([]UsersLoc
 			&i.Longitude,
 			&i.Altitude,
 			&i.Timestamp,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}
@@ -125,7 +131,7 @@ func (q *Queries) GetUserLocations(ctx context.Context, limit int32) ([]UsersLoc
 }
 
 const getUserLocationsByCategory = `-- name: GetUserLocationsByCategory :many
-SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp FROM users_location
+SELECT id, uid, category, fullname, latitude, longitude, altitude, timestamp, email FROM users_location
 WHERE category = ?
 LIMIT ?
 `
@@ -153,6 +159,7 @@ func (q *Queries) GetUserLocationsByCategory(ctx context.Context, arg GetUserLoc
 			&i.Longitude,
 			&i.Altitude,
 			&i.Timestamp,
+			&i.Email,
 		); err != nil {
 			return nil, err
 		}
@@ -171,26 +178,32 @@ const updateUserLocation = `-- name: UpdateUserLocation :execresult
 UPDATE users_location
 SET
     latitude = ?,
+    email = ?,
     longitude = ?,
     altitude = ?,
-    timestamp = ?
+    timestamp = ?,
+    fullname = ?
 WHERE uid = ?
 `
 
 type UpdateUserLocationParams struct {
 	Latitude  sql.NullFloat64 `json:"latitude"`
+	Email     sql.NullString  `json:"email"`
 	Longitude sql.NullFloat64 `json:"longitude"`
 	Altitude  sql.NullFloat64 `json:"altitude"`
 	Timestamp sql.NullTime    `json:"timestamp"`
+	Fullname  string          `json:"fullname"`
 	Uid       string          `json:"uid"`
 }
 
 func (q *Queries) UpdateUserLocation(ctx context.Context, arg UpdateUserLocationParams) (sql.Result, error) {
 	return q.db.ExecContext(ctx, updateUserLocation,
 		arg.Latitude,
+		arg.Email,
 		arg.Longitude,
 		arg.Altitude,
 		arg.Timestamp,
+		arg.Fullname,
 		arg.Uid,
 	)
 }

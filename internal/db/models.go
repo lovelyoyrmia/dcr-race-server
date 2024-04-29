@@ -17,4 +17,5 @@ type UsersLocation struct {
 	Longitude sql.NullFloat64 `json:"longitude"`
 	Altitude  sql.NullFloat64 `json:"altitude"`
 	Timestamp sql.NullTime    `json:"timestamp"`
+	Email     sql.NullString  `json:"email"`
 }

@@ -1,22 +1,25 @@
 -- name: CreateUserLocation :execresult
 INSERT INTO users_location (
     uid,
+    email,
     latitude,
     longitude,
     altitude,
     category,
     fullname
 ) VALUES (
-    ?, ?, ?, ?, ?, ?
+    ?, ?, ?, ?, ?, ?, ?
 );
 
 -- name: UpdateUserLocation :execresult
 UPDATE users_location
 SET
     latitude = ?,
+    email = ?,
     longitude = ?,
     altitude = ?,
-    timestamp = ?
+    timestamp = ?,
+    fullname = ?
 WHERE uid = ?;
 
 -- name: GetUserLocations :many

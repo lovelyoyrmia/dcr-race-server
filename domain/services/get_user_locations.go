@@ -30,8 +30,8 @@ func (service *userLocationServices) GetUserLocations(c echo.Context) error {
 
 	for _, v := range *locations {
 		userLocations = append(userLocations, types.UserLocation{
-			ID:        int64(v.ID),
-			Email:     v.Uid,
+			Uid:       v.Uid,
+			Email:     v.Email.String,
 			Fullname:  v.Fullname,
 			Latitude:  v.Latitude.Float64,
 			Longitude: v.Longitude.Float64,
